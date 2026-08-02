@@ -1,0 +1,93 @@
+/*
+  X-Degree <-> Dawn bridge.
+
+  xd-bootstrap.css and xd-main.css are the untouched design files. This file
+  only neutralises Dawn defaults that would otherwise bleed into them.
+  Put design changes in the source HTML build and re-copy - not here.
+*/
+
+/*
+  Dawn sets html{font-size: calc(var(--font-body-scale) * 62.5%)} => 10px root.
+  Bootstrap is authored against a 16px root and is almost entirely rem-based,
+  so a 10px root silently shrinks every Bootstrap gutter, padding and column
+  gap by 37.5%. The design build runs at the browser default, so restore it.
+*/
+html {
+  font-size: 16px;
+}
+
+/*
+  Dawn's inline <style> in theme.liquid loads before these stylesheets and
+  sets properties main.css never declares, so they survive and distort the
+  design (notably letter-spacing, which offsets every line of text).
+*/
+body {
+  display: block;
+  letter-spacing: normal;
+  line-height: 1.6;
+}
+
+/*
+  Dawn's base.css targets the heading ELEMENTS directly:
+
+      h1,h2,h3,h4,h5,.h0..h5 {
+        font-family: var(--font-heading-family);      => Assistant, not Inter
+        font-style:  var(--font-heading-style);
+        letter-spacing: calc(var(--font-heading-scale) * 0.06rem);
+        color: rgb(var(--color-foreground));
+        word-break: break-word;
+      }
+
+  main.css only sets the font on html/body, and an inherited value can never
+  beat a rule aimed at the element, so every <h1>-<h5> in the design picked up
+  Dawn's font AND ~0.96px of extra letter-spacing per character - enough to
+  push product card titles onto a second line. Reset the lot to inherit so the
+  design's own cascade applies, exactly as it does in the standalone build.
+  The design's .heading-font / .heading-font2 classes still win on specificity,
+  so Space Grotesk / Albert Sans headings are unaffected.
+*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: inherit;
+  font-style: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  word-break: normal;
+}
+
+/* Dawn's colour-scheme classes force their own bg/text onto our sections. */
+body.gradient {
+  background: #ffffff;
+  color: #a2a2a2;
+}
+
+/*
+  Dawn's base.css hides every empty element:
+      a:empty, ul:empty, div:empty, section:empty, p:empty, h1:empty ... { display: none }
+  The design legitimately uses empty <div>s as structural elements - the
+  footer's horizontal rules and the Swiper pagination container (which is
+  empty until Swiper injects bullets). Re-show those.
+*/
+/* NB: Dawn's `div:empty` is specificity (0,1,1); a bare class (0,1,0) loses
+   to it no matter the load order, so each selector carries :empty too. */
+.footer__divider:empty,
+.footer__logo-rule:empty,
+.container-fluid:empty,
+.swiper-pagination:empty {
+  display: block;
+}
+
+/* Dawn wraps every section in .shopify-section; it must not create spacing. */
+.shopify-section {
+  margin: 0;
+  padding: 0;
+}
+
+/* The design's own <header>/<footer> replace Dawn's, so drop Dawn's spacing. */
+#MainContent {
+  margin: 0;
+}

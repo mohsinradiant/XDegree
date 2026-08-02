@@ -1,0 +1,97 @@
+{% comment %}
+  Markup copied verbatim from the supplied index.html (pickleball-card section).
+{% endcomment %}
+{%- liquid
+  assign bg = section.settings.background_image | image_url: width: 3840
+-%}
+
+<section class="section-t-padding96" style="background-image: url({{ bg }}); background-size: cover;">
+  <div class="container custom-width">
+    <div class="section-heading mb-5 text-center">
+      <div class="sub-heading">{{ section.settings.eyebrow }}</div>
+      <h3 class="all-heading heading-font text-white">{{ section.settings.heading }}</h3>
+    </div>
+    <div class="row pickleball-card bg-black pb-0">
+      <div class="col-lg-4">
+        <div class="pickleball-card--widget">
+          <h4 class="pickleball-card--widget--title heading-font">
+            {{ section.settings.panel_heading }}
+            <span class="text-drak-crimson-red">{{ section.settings.panel_heading_highlight }}</span>
+            {{ section.settings.panel_heading_end }}
+          </h4>
+          <p class="mb-0 text-white fs14 fw500 mt-2">{{ section.settings.panel_subtext }}</p>
+          <ul class="list-unstyled m-0 p-0 pickleball-card-list my-4">
+            {%- for block in section.blocks -%}
+              <li {{ block.shopify_attributes }}>{{ block.settings.text }}</li>
+            {%- endfor -%}
+          </ul>
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="text-end fs13 lh100 text-white fw500">{{ section.settings.price_label }}</div>
+            <div class="pickleball-card--price fs29 fw700 text-white">{{ section.settings.price }}</div>
+          </div>
+          <a href="{{ section.settings.button_link | default: '#' }}" class="heading-font btn btn-primary">
+            {{ section.settings.button_label }}
+            <span class="btn-icon"><img src="{{ 'rt-icon.svg' | asset_url }}" alt=""></span>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 offset-2 d-flex align-items-end justify-content-end px-5 pb-5">
+        {%- if section.settings.side_image != blank -%}
+          <img src="{{ section.settings.side_image | image_url: width: 984 }}" class="img-fluid" alt="">
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "XD Set builder banner",
+  "settings": [
+    { "type": "image_picker", "id": "background_image", "label": "Section background image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "Build Your Own" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pickleball Set" },
+    { "type": "header", "content": "Panel" },
+    {
+      "type": "text",
+      "id": "panel_heading",
+      "label": "Panel heading start",
+      "default": "Get Discount on your own"
+    },
+    {
+      "type": "text",
+      "id": "panel_heading_highlight",
+      "label": "Panel heading highlighted word",
+      "default": "PIckleball"
+    },
+    { "type": "text", "id": "panel_heading_end", "label": "Panel heading end", "default": "Set" },
+    {
+      "type": "text",
+      "id": "panel_subtext",
+      "label": "Panel subtext",
+      "default": "CHOOSE PADDLE, BALLS & BAG oF Your Own CHoice"
+    },
+    { "type": "text", "id": "price_label", "label": "Price label", "default": "Starting<br>From" },
+    { "type": "text", "id": "price", "label": "Price", "default": "₹8,499" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Choose your Set" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "image_picker", "id": "side_image", "label": "Side image" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature line",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "99% Sweet Spot, Zero Dead Spots" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "XD Set builder banner",
+      "blocks": [{ "type": "feature" }, { "type": "feature" }, { "type": "feature" }, { "type": "feature" }]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,105 @@
+{% comment %}
+  Markup copied verbatim from the supplied index.html (hero_banner section).
+{% endcomment %}
+{%- liquid
+  assign bg = section.settings.image | image_url: width: 3840
+-%}
+
+<section class="hero_banner section-tb-padding96 position-relative" style="background-image: url({{ bg }});">
+  <div class="container custom-width">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="hero_banner--widget">
+          <div class="hero-banner--sub-title heading-font">{{ section.settings.eyebrow }}</div>
+          <h2 class="hero_banner--title">
+            {{ section.settings.heading_line_1 }} <br>{{ section.settings.heading_line_2 }}
+            <em class="text-drak-crimson-red fw400">{{ section.settings.heading_highlight }}</em>
+          </h2>
+          <div class="text-white-80 mt-2">{{ section.settings.description }}</div>
+          <div class="mt-5 d-flex gap-3">
+            <a
+              href="{{ section.settings.button_link_1 | default: '#' }}"
+              class="hero_banner--btn heading-font btn btn-primary"
+            >
+              {{ section.settings.button_label_1 }}
+              <span class="btn-icon"><img src="{{ 'rt-icon.svg' | asset_url }}" alt=""></span>
+            </a>
+            <a
+              href="{{ section.settings.button_link_2 | default: '#' }}"
+              class="hero_banner--btn heading-font btn btn-outline-accent"
+            >
+              {{ section.settings.button_label_2 }} <i class="fa-regular fa-arrow-right-long"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "XD Hero banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image",
+      "info": "Recommended 3840 x 1306px. Leave blank to use the bundled banner01.jpg"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "New Season 2026 Collection"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "Heading line 1",
+      "default": "Built for"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2",
+      "label": "Heading line 2",
+      "default": "the"
+    },
+    {
+      "type": "text",
+      "id": "heading_highlight",
+      "label": "Heading highlighted word",
+      "default": "Elite."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Tournament-grade paddles, courts and gear designed with athletes, engineered for the next generation of pickleball."
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "Button 1 label",
+      "default": "SHOP THE COLLECTION"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "Button 1 link"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "Button 2 label",
+      "default": "Explore All GearS"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Button 2 link"
+    }
+  ],
+  "presets": [{ "name": "XD Hero banner" }]
+}
+{% endschema %}

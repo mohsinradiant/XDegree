@@ -281,6 +281,18 @@
     {{ 'base.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
+    {% comment %}
+      X-Degree design system - these are the original design files copied
+      verbatim from the supplied HTML build (css/bootstrap.min.css and
+      css/main.css). Loaded AFTER base.css so the design wins over Dawn's
+      defaults. Do not hand-edit xd-main.css; re-copy it from source instead.
+    {% endcomment %}
+    {{ 'xd-bootstrap.css' | asset_url | stylesheet_tag }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    {{ 'xd-main.css' | asset_url | stylesheet_tag }}
+    {{ 'xd-overrides.css' | asset_url | stylesheet_tag }}
+    {{ 'xd-responsive.css' | asset_url | stylesheet_tag }}
+
     {%- if settings.cart_type == 'drawer' -%}
       {{ 'component-cart-drawer.css' | asset_url | stylesheet_tag }}
       {{ 'component-cart.css' | asset_url | stylesheet_tag }}
@@ -401,5 +413,18 @@
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
+
+    {% comment %}
+      X-Degree design scripts, mirroring the script order in the supplied
+      index.html (jQuery -> Bootstrap -> Swiper -> Waypoints -> CounterUp -> custom.js).
+      xd-custom.js boots the Swiper sliders, so it must come last.
+    {% endcomment %}
+    <script src="{{ 'xd-jquery.js' | asset_url }}"></script>
+    <script src="{{ 'xd-bootstrap.js' | asset_url }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/19fc32e19e.js" crossorigin="anonymous"></script>
+    <script src="{{ 'xd-waypoints.js' | asset_url }}"></script>
+    <script src="{{ 'xd-counterup.js' | asset_url }}"></script>
+    <script src="{{ 'xd-custom.js' | asset_url }}"></script>
   </body>
 </html>

@@ -1,0 +1,66 @@
+{% comment %}
+  Renders one product card in the X-Degree design.
+  Markup copied verbatim from the supplied index.html.
+  Accepts:
+    product     - {Object} the product
+    style       - {String} 'default' | 'trending' | 'bestsellers'
+    show_badge  - {Boolean} render the "New Arrival" pill (trending only)
+    badge_text  - {String} pill label
+{% endcomment %}
+{%- liquid
+  assign img = product.featured_image
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+    assign discount = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+  endif
+-%}
+{%- if style == 'trending' -%}
+  <div class="product-card trending-card-style">
+    <div class="product-card-image position-relative p-0">
+      {%- if img != blank -%}
+        <img src="{{ img | image_url: width: 900 }}" class="img-fluid" alt="{{ img.alt | escape }}">
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'img-fluid placeholder-svg' }}
+      {%- endif -%}
+      {%- if show_badge -%}<span class="new-arrival">{{ badge_text }}</span>{%- endif -%}
+    </div>
+    <div class="product-card-content px-0">
+      <a class="btn sm-btn product-card-btn btn-primary" href="{{ product.url }}">BUY NOW <span class="btn-icon"><img src="{{ 'rt-icon.svg' | asset_url }}" alt=""></span></a>
+      <h4 class="product-card-title my-1 fs16 fw500 text-white-80">{{ product.title }}</h4>
+      <div class="product-card-price fs16 text-white fw500">{{ product.price | money_without_trailing_zeros }} {% if on_sale %}<del class="fs13 text-white-50">{{ product.compare_at_price | money_without_trailing_zeros }}</del> <span class="text-drak-crimson-red fs13 fw500">&minus;{{ discount }}%</span>{% endif %}</div>
+    </div>
+  </div>
+{%- elsif style == 'bestsellers' -%}
+  <div class="product-card">
+    <div class="product-card-image">
+      {%- if img != blank -%}
+        <img src="{{ img | image_url: width: 900 }}" class="img-fluid" alt="{{ img.alt | escape }}">
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'img-fluid placeholder-svg' }}
+      {%- endif -%}
+    </div>
+    <div class="product-card-content">
+      <a class="btn sm-btn product-card-btn btn-primary" href="{{ product.url }}">BUY NOW <span class="btn-icon"><img src="{{ 'rt-icon.svg' | asset_url }}" alt=""></span></a>
+      <div class="product-category">{{ product.type }}</div>
+      <h4 class="product-card-title my-1 fs16 fw500 text-primary">{{ product.title }}</h4>
+      <div class="product-card-price fs16 text-primary fw700">{{ product.price | money_without_trailing_zeros }} {% if on_sale %}<del class="fs13 text-primary opacity-50">{{ product.compare_at_price | money_without_trailing_zeros }}</del> <span class="text-drak-crimson-red fs13 fw500">&minus;{{ discount }}%</span>{% endif %}</div>
+    </div>
+  </div>
+{%- else -%}
+  <div class="product-card">
+    <div class="product-card-image">
+      {%- if img != blank -%}
+        <img src="{{ img | image_url: width: 900 }}" class="img-fluid" alt="{{ img.alt | escape }}">
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'img-fluid placeholder-svg' }}
+      {%- endif -%}
+    </div>
+    <div class="product-card-content">
+      <a class="btn sm-btn product-card-btn btn-primary" href="{{ product.url }}">BUY NOW <span class="btn-icon"><img src="{{ 'rt-icon.svg' | asset_url }}" alt=""></span></a>
+      <div class="product-category">{{ product.type }}</div>
+      <h4 class="product-card-title my-1 fs16 fw500 text-white-80">{{ product.title }}</h4>
+      <div class="product-card-price fs16 text-white fw500">{{ product.price | money_without_trailing_zeros }} {% if on_sale %}<del class="fs13 text-white-50">{{ product.compare_at_price | money_without_trailing_zeros }}</del> <span class="text-drak-crimson-red fs13 fw500">&minus;{{ discount }}%</span>{% endif %}</div>
+    </div>
+  </div>
+{%- endif -%}

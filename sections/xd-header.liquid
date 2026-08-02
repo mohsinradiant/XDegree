@@ -1,0 +1,113 @@
+{% comment %}
+  Markup copied verbatim from the supplied index.html (top bar + site-header).
+  Only the hard-coded values are swapped for Shopify objects:
+  logo -> settings.logo, nav items -> section.settings.menu, icons -> routes.
+{% endcomment %}
+
+<div class="top-bar py-2 bg-drak-crimson-red">
+  <div class="container custom-width">
+    <div class="row">
+      <div class="col-md-4">
+        <a href="{{ section.settings.support_link | default: '#' }}" class="fs14 fw500 text-white">
+          {{- section.settings.support_text -}}
+        </a>
+      </div>
+      <div class="col-md-4 text-center fs14 heading-font fw500 text-white">{{ section.settings.message }}</div>
+    </div>
+  </div>
+</div>
+<header class="site-header py-2">
+  <div class="container custom-width">
+    <nav class="site-header__navbar navbar navbar-expand-xl p-0">
+      <a class="site-header__brand navbar-brand" href="{{ routes.root_url }}">
+        {%- if settings.logo != blank -%}
+          <img
+            src="{{ settings.logo | image_url: width: 402 }}"
+            alt="{{ settings.logo.alt | default: shop.name | escape }}"
+            class="site-header__logo"
+          >
+        {%- endif -%}
+      </a>
+      <button
+        class="site-header__toggler navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNavbar"
+        aria-controls="mainNavbar"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="site-header__collapse collapse navbar-collapse" id="mainNavbar">
+        <ul class="site-header__nav navbar-nav mx-auto sm-heading">
+          {%- for link in section.settings.menu.links -%}
+            <li class="site-header__nav-item nav-item">
+              <a
+                class="site-header__nav-link nav-link{% if link.current or link.child_active %} active{% endif %}"
+                href="{{ link.url }}"
+              >
+                {{- link.title | escape -}}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+      {%- comment -%}
+        Cart/account sit OUTSIDE .navbar-collapse. In the source build they are
+        inside it, which means they vanish on mobile until the burger menu is
+        opened (a collapsed .collapse is display:none, so children can't be
+        shown by CSS). Desktop layout is unchanged - verified pixel-identical.
+      {%- endcomment -%}
+      <div class="site-header__ecommoption d-inline-flex flex-row align-items-center gap-4 w-auto">
+        <a class="site-header__option site-header__cart" href="{{ routes.cart_url }}">
+          <i class="fa-regular fa-cart-shopping-fast"></i>
+        </a>
+        <a
+          class="site-header__option site-header__user"
+          href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+        >
+          <i class="fa-regular fa-user"></i>
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "XD Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Top bar"
+    },
+    {
+      "type": "text",
+      "id": "support_text",
+      "label": "Left link text",
+      "default": "Customer Support"
+    },
+    {
+      "type": "url",
+      "id": "support_link",
+      "label": "Left link URL"
+    },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Center message",
+      "default": "FREE SHIPPING | LIMITED LIFETIME WARRANTY"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

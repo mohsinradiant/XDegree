@@ -1,0 +1,145 @@
+/*
+  X-Degree responsive rules.
+
+  Loaded after xd-main.css so it wins on equal specificity. Kept to exactly
+  two breakpoints, per spec:
+      max-width: 756px  - phones / small tablets
+      max-width: 400px  - narrow phones (compounds on top of the 756 block)
+
+  Desktop is untouched: nothing here applies above 756px.
+*/
+
+@media (max-width: 756px) {
+  /* ---------- Global rhythm: 96px section padding is far too tall ---------- */
+  .section-tb-padding96 { padding-top: 56px; padding-bottom: 56px; }
+  .section-t-padding96 { padding-top: 56px; }
+
+  /* ---------- Top bar: the two col-md-4 halves stack, so centre them ------- */
+  .top-bar .row > [class^="col-"] { text-align: center; }
+  .top-bar .fs14 { font-size: 12px; }
+
+  /* ---------- Header ------------------------------------------------------ */
+  .site-header__logo { width: 132px; }
+  .site-header__navbar { position: relative; }
+  /* Burger on the left of the icons, menu list drops below the bar. */
+  .site-header__collapse { order: 3; flex-basis: 100%; }
+  .site-header__nav { padding: 12px 0; }
+  .site-header__nav-link { padding: 10px 0 !important; }
+  .site-header__ecommoption { gap: 18px !important; margin-left: auto; }
+  .site-header__toggler { order: 2; margin-left: 16px; box-shadow: none; }
+
+  /* ---------- Hero -------------------------------------------------------- */
+  /* Shift the crop so the copy sits over the dark side of the photo. */
+  .hero_banner { background-position: 24% center; }
+  .hero_banner--title { font-size: 44px; line-height: 90%; margin-top: 16px; }
+  .hero_banner--title br { display: none; }
+  .hero-banner--sub-title { font-size: 10px; }
+  .hero_banner--widget .text-white-80 { font-size: 14px; }
+  /* Two 256px buttons cannot sit side by side on a phone. */
+  .hero_banner--widget .d-flex { flex-wrap: wrap; }
+  .hero_banner--btn { min-width: 0; width: 100%; }
+
+  /* ---------- Section heading rows (title left / note+CTA right) ---------- */
+  .all-heading { font-size: 34px; }
+  .row.mb-5 .col-md-4 p.text-end { text-align: left !important; font-size: 12px; }
+  .row.mb-5 .col-md-4 .d-flex { justify-content: flex-start; margin-top: 16px; }
+
+  /* ---------- Product cards ---------------------------------------------- */
+  /* There is no hover on touch, so the reveal-on-hover BUY NOW would be
+     unreachable. Pin it into normal flow instead. */
+  .product-card .product-card-content .product-card-btn,
+  .product-card:hover .product-card-content .product-card-btn,
+  .trending-card-style:hover .product-card-btn {
+    position: static;
+    transform: none !important;
+    opacity: 1;
+    visibility: visible;
+    width: 100%;
+    margin: 0 0 12px !important;
+  }
+  .product-card-image { padding: 20px; }
+  .product-card .product-card-content { padding: 16px 0; }
+
+  /* ---------- Categories -------------------------------------------------- */
+  .categories-card-title { font-size: 22px; }
+  .categories-card-btn { padding: 3px 16px; }
+
+  /* ---------- Pickleball set builder -------------------------------------- */
+  /* .offset-2 in the source markup is not breakpoint-scoped, so it pushes the
+     image column off-screen at every width. This is the 756px overflow. */
+  .pickleball-card .offset-2 { margin-left: 0 !important; }
+  .pickleball-card { padding: 36px 20px 0; border-radius: 20px 20px 0 0; }
+  .pickleball-card .px-5 { padding-left: 0 !important; padding-right: 0 !important; }
+  .pickleball-card .pb-5 { padding-bottom: 24px !important; }
+  .pickleball-card--widget--title { font-size: 26px; }
+  .pickleball-card--price { font-size: 24px !important; }
+
+  /* ---------- Why shop ---------------------------------------------------- */
+  .why-shop-widget { border-radius: 20px; }
+  .why-shop-widget-wrap { padding: 0 10px 10px; }
+  .why-shop-widget-wrap:after { height: 18%; border-radius: 12px 12px 24px 24px; }
+  .why-shop-left { padding: 16px 20px 0; }
+  .why-shop-image { margin-top: 0; }
+  .why-shop-right-counter { padding: 0 20px 16px !important; }
+  .why-shop-right-number { font-size: 44px; }
+  .why-shop-right-disc { max-width: 190px; }
+
+  /* ---------- Trusted logos ---------------------------------------------- */
+  .product-trusted { padding: 80px 0 32px; margin-top: -60px; }
+  .product-trusted .fs20 { font-size: 16px; }
+  .sm-logo { margin-bottom: 12px; }
+
+  /* ---------- Trust bar --------------------------------------------------- */
+  /* The markup is .text-center.text-md-start, so below 768px the copy centres
+     while its icon stays left - which reads as misaligned. Keep it left. */
+  .trust-bar .row { text-align: left !important; }
+  .trust-bar img { width: 46px; }
+  .trust-bar__label { font-size: 13px; }
+  .trust-bar__desc { font-size: 11px; }
+
+  /* ---------- Footer ------------------------------------------------------ */
+  .footer__logo img { max-width: 220px; }
+  /* g-5 gutters overflow a phone viewport. */
+  .footer .row.g-5 { --bs-gutter-x: 1.5rem; --bs-gutter-y: 2rem; }
+  .footer__newsletter-heading { margin-top: 24px; }
+  .footer .footer__newsletter-input + .footer__newsletter-btn,
+  .footer__newsletter-btn { max-width: 160px; }
+  .footer__divider { margin-top: 32px; }
+  .footer__bottom { padding: 16px 0; }
+  .footer__legal-links { gap: 0 16px; }
+  .footer-content__social { flex-wrap: wrap; }
+}
+
+@media (max-width: 400px) {
+  .section-tb-padding96 { padding-top: 40px; padding-bottom: 40px; }
+  .section-t-padding96 { padding-top: 40px; }
+
+  .hero_banner--title { font-size: 34px; }
+  .hero_banner--widget .text-white-80 { font-size: 13px; }
+
+  .all-heading { font-size: 26px; }
+  .sub-heading { font-size: 10px; }
+
+  .categories-card-title { font-size: 18px; }
+  .categories-card-btn { padding: 2px 12px; }
+
+  .pickleball-card--widget--title { font-size: 22px; }
+  .pickleball-card-list li { font-size: 13px; padding-left: 26px; }
+
+  .why-shop-right-number { font-size: 34px; }
+  .why-shop-right-disc { font-size: 12px; max-width: 150px; }
+  .why-shop-left-item-title { font-size: 15px; }
+
+  /* Two columns of icon + two lines of copy is too cramped this narrow. */
+  .trust-bar .col-6 { width: 100%; }
+
+  .product-trusted { padding: 64px 0 24px; margin-top: -48px; }
+
+  /* Newsletter input + button no longer fit on one line. */
+  .footer .row .d-flex.align-items-center.justify-content-between.gap-3 { flex-wrap: wrap; }
+  .footer__newsletter-btn { max-width: 100%; margin-top: 12px; }
+  .footer__logo img { max-width: 180px; }
+  .footer__copyright-strip { gap: 10px; }
+  .sm-btn { min-width: 0; }
+}
+
