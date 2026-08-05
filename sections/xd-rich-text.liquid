@@ -1,0 +1,45 @@
+{% comment %}
+  Markup copied verbatim from the supplied about.html (.our-story-section).
+  Body copy comes from the page content or a page metafield so it stays
+  editable outside the theme.
+{% endcomment %}
+{%- liquid
+  assign body = section.settings.text
+  if body == blank and section.settings.use_page_content
+    assign body = page.content
+  endif
+-%}
+<section class="our-story-section section-tb-padding96">
+  <div class="container custom-width">
+    <div class="row g-5">
+      <div class="col-lg-7 pe-lg-5">
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="sub-heading">{{ section.settings.eyebrow }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h3 class="all-heading heading-font text-capitalize text-primary">{{ section.settings.heading }}</h3>
+        {%- endif -%}
+        <div class="text-primary opacity-75 xd-rte">{{ body }}</div>
+      </div>
+      <div class="col-lg-5">
+        {%- if section.settings.image != blank -%}
+          <img src="{{ section.settings.image | image_url: width: 900 }}" class="img-fluid w-100" alt="{{ section.settings.image.alt | escape }}">
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "XD Rich text",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our story" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Built Different" },
+    { "type": "richtext", "id": "text", "label": "Body" },
+    { "type": "checkbox", "id": "use_page_content", "label": "Use the page's own content when body is empty", "default": true },
+    { "type": "image_picker", "id": "image", "label": "Side image" }
+  ],
+  "presets": [{ "name": "XD Rich text" }]
+}
+{% endschema %}

@@ -540,5 +540,9 @@
       "expanded": "Obrazac primatelja poklon-kartice je povećan",
       "collapsed": "Obrazac primatelja poklon-kartice je smanjen"
     }
+  },
+  "xd": {
+    "toggle_navigation": "Toggle navigation",
+    "breadcrumb": "breadcrumb"
   }
 }

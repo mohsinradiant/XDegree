@@ -528,5 +528,9 @@
       "expanded": "礼品卡收件人表单已展开",
       "collapsed": "礼品卡收件人表单已折叠"
     }
+  },
+  "xd": {
+    "toggle_navigation": "Toggle navigation",
+    "breadcrumb": "breadcrumb"
   }
 }

@@ -528,5 +528,9 @@
       "expanded": "ギフトカードカードの受取人フォームを展開しました",
       "collapsed": "ギフトカードカードの受取人フォームを折りたたみました"
     }
+  },
+  "xd": {
+    "toggle_navigation": "Toggle navigation",
+    "breadcrumb": "breadcrumb"
   }
 }

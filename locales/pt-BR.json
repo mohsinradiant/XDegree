@@ -540,5 +540,9 @@
       "expanded": "Formulário de destinatário do cartão-presente expandido",
       "collapsed": "Formulário de destinatário do cartão-presente recolhido"
     }
+  },
+  "xd": {
+    "toggle_navigation": "Toggle navigation",
+    "breadcrumb": "breadcrumb"
   }
 }

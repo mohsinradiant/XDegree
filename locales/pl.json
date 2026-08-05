@@ -552,5 +552,9 @@
       "expanded": "Rozwinięty formularz odbiorcy karty prezentowej",
       "collapsed": "Zwinięty formularz odbiorcy karty prezentowej"
     }
+  },
+  "xd": {
+    "toggle_navigation": "Toggle navigation",
+    "breadcrumb": "breadcrumb"
   }
 }

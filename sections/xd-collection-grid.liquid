@@ -1,0 +1,263 @@
+{% comment %}
+  Markup copied verbatim from the supplied listing.html (filter bar, .filter-box
+  sidebar accordion and the product grid).
+
+  Wired to Shopify natively:
+    - sort dropdown  -> collection.sort_options
+    - sidebar        -> collection.filters (Search & Discovery app)
+    - price slider   -> the price_range filter's min/max params
+    - grid           -> paginated collection.products
+  The grid keeps the .bestsellers-slider class because main.css hangs the
+  bordered card treatment off it (.bestsellers-slider .product-card-image).
+{% endcomment %}
+{%- paginate collection.products by section.settings.products_per_page -%}
+  <section class="section-tb-padding96 pt-0">
+    <div class="container custom-width">
+      <form id="XdFacetForm" method="get" action="{{ collection.url }}">
+        {%- comment -%} Preserve any non-filter query params (e.g. ?q=) {%- endcomment -%}
+        {%- for param in request.url.params -%}{%- endfor -%}
+
+        <div class="row border-bottom g-0 mb-4">
+          <div class="col-md-6 d-flex align-items-center gap-4">
+            <div class="filter-title d-flex align-items-center gap-3 heading-font">
+              {{ section.settings.filter_label }} <img src="{{ 'filter.svg' | asset_url }}" class="" alt="">
+            </div>
+            {%- if section.settings.show_sorting -%}
+              {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+              <div class="sort-box d-flex align-items-center">
+                <label class="heading-font" for="sortBy">{{ section.settings.sort_label }}</label>
+                <select class="form-select" name="sort_by" id="sortBy">
+                  {%- for option in collection.sort_options -%}
+                    <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+                      {{- option.name | escape -}}
+                    </option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3">
+            <div class="filter-box">
+              <div class="accordion accordion-flush" id="filterAccordion">
+                {%- for filter in collection.filters -%}
+                  {%- assign panel_id = 'facet-' | append: forloop.index -%}
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button heading-font" type="button" data-bs-toggle="collapse" data-bs-target="#{{ panel_id }}">{{ filter.label | escape }}</button>
+                    </h2>
+                    <div id="{{ panel_id }}" class="accordion-collapse collapse show" data-bs-parent="#filterAccordion">
+                      {%- case filter.type -%}
+                        {%- when 'price_range' -%}
+                          <div class="accordion-body">
+                            <div class="price-values d-flex justify-content-between mb-2">
+                              <span>{{ filter.min_value.value | default: 0 | money_without_trailing_zeros }}</span>
+                              <span>{{ filter.max_value.value | default: filter.range_max | money_without_trailing_zeros }}</span>
+                            </div>
+                            <span class="multi-range">
+                              <input
+                                type="range"
+                                min="0"
+                                max="{{ filter.range_max | divided_by: 100 }}"
+                                value="{{ filter.min_value.value | default: 0 | divided_by: 100 }}"
+                                id="lower"
+                                name="{{ filter.min_value.param_name }}"
+                                data-xd-price
+                              >
+                              <input
+                                type="range"
+                                min="0"
+                                max="{{ filter.range_max | divided_by: 100 }}"
+                                value="{{ filter.max_value.value | default: filter.range_max | divided_by: 100 }}"
+                                id="upper"
+                                name="{{ filter.max_value.param_name }}"
+                                data-xd-price
+                              >
+                            </span>
+                          </div>
+                        {%- else -%}
+                          <div class="accordion-body ps-3">
+                            <ul class="list-unstyled m-0">
+                              {%- for value in filter.values -%}
+                                <li{% unless forloop.last %} class="mb-2"{% endunless %}>
+                                  <div class="form-check">
+                                    <input
+                                      class="form-check-input"
+                                      type="checkbox"
+                                      id="{{ value.param_name | escape }}-{{ forloop.index }}"
+                                      name="{{ value.param_name }}"
+                                      value="{{ value.value | escape }}"
+                                      {% if value.active %}checked{% endif %}
+                                      {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                    >
+                                    <label class="form-check-label filter-link d-flex justify-content-between align-items-center w-100" for="{{ value.param_name | escape }}-{{ forloop.index }}">
+                                      {{ value.label | escape }} <span>{{ value.count }}</span>
+                                    </label>
+                                  </div>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </div>
+                      {%- endcase -%}
+                    </div>
+                  </div>
+                {%- else -%}
+                  <div class="accordion-item">
+                    <div class="accordion-body ps-3">
+                      <p class="filter-link mb-0">{{ section.settings.no_filters_text }}</p>
+                    </div>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-9">
+            <div class="row g-4 bestsellers-slider">
+              {%- for product in collection.products -%}
+                <div class="col-md-4">
+                  {%- render 'xd-product-card',
+                    product: product,
+                    style: 'bestsellers',
+                    buy_label: section.settings.buy_label,
+                    on_dark: false,
+                    show_rating: section.settings.show_rating
+                  -%}
+                </div>
+              {%- else -%}
+                <div class="col-12">
+                  <p class="filter-link">{{ section.settings.empty_text }}</p>
+                </div>
+              {%- endfor -%}
+            </div>
+
+            {%- if paginate.pages > 1 -%}
+              <nav class="xd-pager d-flex justify-content-center gap-2 mt-5">
+                {%- if paginate.previous -%}
+                  <a class="xd-pager__link" href="{{ paginate.previous.url }}" aria-label="{{ section.settings.prev_label | escape }}">{{ section.settings.prev_label }}</a>
+                {%- endif -%}
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a class="xd-pager__link" href="{{ part.url }}">{{ part.title }}</a>
+                  {%- elsif part.title == paginate.current_page -%}
+                    <span class="xd-pager__link is-active" aria-current="page">{{ part.title }}</span>
+                  {%- else -%}
+                    <span class="xd-pager__link">{{ part.title }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if paginate.next -%}
+                  <a class="xd-pager__link" href="{{ paginate.next.url }}" aria-label="{{ section.settings.next_label | escape }}">{{ section.settings.next_label }}</a>
+                {%- endif -%}
+              </nav>
+            {%- endif -%}
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+{%- endpaginate -%}
+
+<script>
+  // Submit the facet form whenever a filter or the sort order changes.
+  (function () {
+    var form = document.getElementById('XdFacetForm');
+    if (!form) return;
+
+    // The price inputs always carry a value, so left untouched they would pin
+    // filter.v.price.gte/lte onto every URL. Disable them (so they are not
+    // serialised) whenever they still span the full range.
+    function syncPriceInputs() {
+      var lower = form.querySelector('#lower');
+      var upper = form.querySelector('#upper');
+      if (!lower || !upper) return;
+      var untouched = Number(lower.value) <= Number(lower.min) && Number(upper.value) >= Number(upper.max);
+      lower.disabled = untouched;
+      upper.disabled = untouched;
+    }
+
+    form.addEventListener('submit', syncPriceInputs);
+    form.addEventListener('change', function () {
+      syncPriceInputs();
+      form.submit();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "XD Collection grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "filter_label",
+      "label": "Filter label",
+      "default": "FILTERS BY"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sorting",
+      "label": "Show sort dropdown",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sort_label",
+      "label": "Sort label",
+      "default": "SORT BY"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 3,
+      "max": 36,
+      "step": 3,
+      "default": 9
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show product rating",
+      "default": true,
+      "info": "Requires a product rating metafield (e.g. from a reviews app)"
+    },
+    {
+      "type": "text",
+      "id": "no_filters_text",
+      "label": "Text when no filters exist",
+      "default": "No filters available. Add them in the Search & Discovery app."
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty collection text",
+      "default": "No products found."
+    },
+    {
+      "type": "text",
+      "id": "buy_label",
+      "label": "Card button label",
+      "default": "BUY NOW"
+    },
+    {
+      "type": "text",
+      "id": "prev_label",
+      "label": "Pagination previous",
+      "default": "\u2190"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Pagination next",
+      "default": "\u2192"
+    }
+  ],
+  "presets": [
+    {
+      "name": "XD Collection grid"
+    }
+  ]
+}
+{% endschema %}

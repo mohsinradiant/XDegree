@@ -1,14 +1,10 @@
 /*
   NOTE: local change vs the original design build.
-  Swiper's loop mode rearranges slides and needs at least slidesPerView * 2
-  of them; with fewer it leaves blank gaps in the track. The section now
-  repeats the categories to clear that threshold (see the section's Liquid),
-  which is what keeps the loop free of empty space - note that raising
-  `loopAdditionalSlides` above the default actually reintroduces the gap here.
-  Because those repeats are real slides, Swiper would render a bullet per
-  repeat, so
-  pagination bullets are rendered/highlighted against the number of real
-  categories (data-xd-unique) instead.
+  Swiper's loop mode rearranges slides and needs at least slidesPerView * 2 of
+  them; with fewer it leaves blank gaps. The section repeats the categories to
+  clear that threshold - raising loopAdditionalSlides reintroduces the gap.
+  Because those repeats are real slides, pagination bullets are rendered and
+  highlighted against the real category count (data-xd-unique) instead.
 */
 var xdCategoriesEl = document.querySelector(".categories-slider");
 var xdUniqueCategories = xdCategoriesEl
@@ -33,7 +29,6 @@ var CategoriesSlider = new Swiper(".categories-slider", {
     },
   },
   on: {
-    // Map the looped position back onto the real categories.
     slideChange: function () {
       if (!xdUniqueCategories) return;
       var bullets = this.pagination && this.pagination.bullets;
@@ -100,4 +95,25 @@ var TrendingSlider = new Swiper(".trending-slider", {
             slidesPerView: 4,
         }
     }
+});
+
+
+
+
+
+$(document).ready(function () {
+
+    $("#qtyPlus").on("click", function () {
+        let qty = parseInt($("#qtyValue").text());
+        $("#qtyValue").text(qty + 1);
+    });
+
+    $("#qtyMinus").on("click", function () {
+        let qty = parseInt($("#qtyValue").text());
+
+        if (qty > 1) {
+            $("#qtyValue").text(qty - 1);
+        }
+    });
+
 });

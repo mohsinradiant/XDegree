@@ -91,3 +91,173 @@ body.gradient {
 #MainContent {
   margin: 0;
 }
+
+/*
+  Collection pagination. The static design build had no pagination (it showed a
+  fixed set of cards), so this is styled to match the design's filter links and
+  pill buttons rather than copied from source.
+*/
+.xd-pager__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 50px;
+  border: solid 1px rgb(35 31 32 / 14%);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #231f20;
+  text-decoration: none;
+}
+
+.xd-pager__link:hover,
+.xd-pager__link.is-active {
+  background-color: #d50032;
+  border-color: #d50032;
+  color: #fff;
+}
+
+/*
+  Product gallery main image.
+  main.css never sizes it, so it rendered at the source image's natural width.
+  That happened to look right for the static design's single hero shot, but
+  swapping in any other image (e.g. a narrower infographic) collapsed it.
+  Filling the container keeps every image the same size - and reproduces the
+  design's 447px exactly, since that is the container's inner width.
+*/
+.rug-gallery__main img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/*
+  Product gallery thumbs.
+  main.css sizes them at a fixed 119px with `justify-content: space-between`,
+  which is exact for the five images the static design ships. A real product
+  can have any number, and flex's default shrink squashed them. Pin the size
+  and let the strip scroll instead - five still lays out identically.
+*/
+.fbf-gallery__thumbs {
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.fbf-gallery__thumb {
+  flex: 0 0 auto;
+  cursor: pointer;
+  object-fit: contain;
+}
+
+/*
+  Product tab bodies.
+  These come from rich_text metafields, so they render as bare <ul>/<h4>/<p>
+  and cannot carry the design's utility classes (.product-description-list,
+  .heading-font.fs20.fw700.text-primary, ...). Re-apply the design's own
+  values by scope so metafield-driven copy looks identical to the static
+  build while staying editable in the admin.
+  Values copied from main.css - do not invent new ones here.
+*/
+.product-description-section .metafield-rich_text_field ul {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.product-description-section .metafield-rich_text_field ul li {
+  width: 50%;
+  position: relative;
+  padding-left: 20px;
+  font-size: 14px;
+  color: #382b2a;
+  margin: 4px 0;
+}
+
+.product-description-section .metafield-rich_text_field ul li:after {
+  width: 8px;
+  height: 8px;
+  background-color: #d81921;
+  position: absolute;
+  content: '';
+  left: 0;
+  border-radius: 50%;
+  top: 8px;
+}
+
+.product-description-section .metafield-rich_text_field h1,
+.product-description-section .metafield-rich_text_field h2,
+.product-description-section .metafield-rich_text_field h3,
+.product-description-section .metafield-rich_text_field h4,
+.product-description-section .metafield-rich_text_field h5 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #231f20;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.product-description-section .metafield-rich_text_field p {
+  color: #231f20;
+}
+
+@media (max-width: 756px) {
+  .product-description-section .metafield-rich_text_field ul li { width: 100%; }
+}
+
+/*
+  Native policy pages (/policies/*).
+  Shopify renders these with its own fixed .shopify-policy__* markup and
+  ignores custom templates, so the design's privacy-policy layout is applied
+  by CSS instead. Values mirror .privacy-policy-section in the source build:
+  centred heading, then a light rounded content card at col-md-8 width.
+*/
+.shopify-policy__container {
+  max-width: 1320px;
+  margin: 3rem auto;
+  padding: 0 12px;
+}
+
+.shopify-policy__title { text-align: center; margin-bottom: 32px; }
+
+.shopify-policy__title h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -4%;
+  text-transform: capitalize;
+  color: #231f20;
+}
+
+.shopify-policy__body {
+  max-width: 66.6667%;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  padding: 3rem 1.5rem;
+  color: #231f20;
+}
+
+.shopify-policy__body .rte h4 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #231f20;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.shopify-policy__body .rte p { color: #231f20; margin-bottom: 1rem; }
+
+@media (max-width: 756px) {
+  .shopify-policy__title h1 { font-size: 34px; }
+  .shopify-policy__body { max-width: 100%; padding: 2rem 1.25rem; }
+}
+
+@media (max-width: 400px) {
+  .shopify-policy__title h1 { font-size: 26px; }
+}

@@ -99,7 +99,10 @@
 
   /* ---------- Footer ------------------------------------------------------ */
   .footer__logo img { max-width: 220px; }
-  /* g-5 gutters overflow a phone viewport. */
+  /* Bootstrap's g-5 gutter (-1.5rem row margins) is wider than the
+     container's 12px padding, so it pushes 12px past the viewport on any
+     page that uses it - the footer and the About page's story row. */
+  .container .row.g-5,
   .footer .row.g-5 { --bs-gutter-x: 1.5rem; --bs-gutter-y: 2rem; }
   .footer__newsletter-heading { margin-top: 24px; }
   .footer .footer__newsletter-input + .footer__newsletter-btn,
@@ -108,6 +111,39 @@
   .footer__bottom { padding: 16px 0; }
   .footer__legal-links { gap: 0 16px; }
   .footer-content__social { flex-wrap: wrap; }
+
+  /* ---------- Collection page ------------------------------------------- */
+  /* 5 paddle tiles in a Bootstrap .col row stay side-by-side at every width;
+     wrap them to 2-up instead. */
+  .all-product .row > .col { flex: 0 0 50%; max-width: 50%; margin-bottom: 20px; }
+  .all-product .paddles-card-title { font-size: 16px; }
+  .filter-box { margin-bottom: 32px; }
+  .sort-box .form-select { max-width: 190px; }
+  .filter-title { font-size: 13px; }
+  /* Grid drops to 2-up (Bootstrap col-md-4 would go full width below 768). */
+  .bestsellers-slider .col-md-4 { flex: 0 0 50%; max-width: 50%; }
+
+  /* ---------- Product page ------------------------------------------------ */
+  .fbf-pdp .row.g-5 { --bs-gutter-x: 1.5rem; --bs-gutter-y: 2rem; }
+  /* .rug-gallery__main has 70px padding and the image is unconstrained. */
+  .rug-gallery__main { padding: 28px; }
+  .rug-gallery__main img { max-width: 100%; height: auto; }
+  .fbf-gallery__thumbs { gap: 8px; overflow-x: auto; }
+  .fbf-gallery__thumb { width: 88px; flex: 0 0 88px; }
+  .fbf-info__title { font-size: 28px; }
+  .fbf-info__price { font-size: 22px; }
+  .fbf-trust-box { flex-wrap: wrap; }
+  /* Five tabs will not fit a phone width. The design pins the pill bar to
+     width: fit-content, so it must be released before it can scroll. */
+  .product-tabs .nav-tabs {
+    width: auto;
+    max-width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .product-tabs .nav-tabs .nav-link { white-space: nowrap; }
+  .product-description-section .tab-content { padding: 16px !important; }
 }
 
 @media (max-width: 400px) {
@@ -141,5 +177,18 @@
   .footer__logo img { max-width: 180px; }
   .footer__copyright-strip { gap: 10px; }
   .sm-btn { min-width: 0; }
-}
 
+  /* ---------- Collection page ------------------------------------------- */
+  .all-product .row > .col { flex: 0 0 100%; max-width: 100%; }
+  .bestsellers-slider .col-md-4 { flex: 0 0 100%; max-width: 100%; }
+  .row.border-bottom .col-md-6 { flex-wrap: wrap; gap: 12px !important; }
+  .sort-box { width: 100%; }
+  .sort-box .form-select { max-width: none; }
+
+  /* ---------- Product page ------------------------------------------------ */
+  .rug-gallery__main { padding: 16px; }
+  .fbf-gallery__thumb { width: 68px; flex: 0 0 68px; }
+  .fbf-info__title { font-size: 24px; }
+  .fbf-pdp .d-flex.gap-2.mt-4 { flex-wrap: wrap; }
+  .fbf-cart-btn { max-width: none; width: 100%; }
+}

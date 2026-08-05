@@ -292,6 +292,7 @@
     {{ 'xd-main.css' | asset_url | stylesheet_tag }}
     {{ 'xd-overrides.css' | asset_url | stylesheet_tag }}
     {{ 'xd-responsive.css' | asset_url | stylesheet_tag }}
+    {{ 'xd-cart.css' | asset_url | stylesheet_tag }}
 
     {%- if settings.cart_type == 'drawer' -%}
       {{ 'component-cart-drawer.css' | asset_url | stylesheet_tag }}

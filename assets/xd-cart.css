@@ -1,0 +1,120 @@
+/*
+  Brand styling for Shopify's NATIVE cart drawer (Dawn's <cart-drawer>) plus
+  the add-to-cart spinner and header count bubble.
+  Only colours/typography are restyled - Dawn keeps ownership of the drawer's
+  behaviour and markup.
+*/
+
+/* ---------- header cart bubble ---------- */
+.site-header__cart { position: relative; }
+
+.xd-cart-bubble {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 20px;
+  background: #d50032;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+/* ---------- native drawer, brand skin ---------- */
+cart-drawer .drawer__inner { border-radius: 0; }
+
+cart-drawer .drawer__heading {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #231f20;
+}
+
+cart-drawer .cart-item__name,
+cart-drawer .cart-item__name:hover {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #231f20;
+}
+
+cart-drawer .cart-item__name:hover { color: #d50032; }
+
+cart-drawer .totals__subtotal,
+cart-drawer .totals__subtotal-value {
+  font-family: "Space Grotesk", sans-serif;
+  color: #231f20;
+  text-transform: uppercase;
+}
+
+/* Checkout button in the design's pill style */
+cart-drawer .cart__checkout-button {
+  background-color: #00ac75;
+  border-color: #00ac75;
+  border-radius: 40px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+cart-drawer .cart__checkout-button:hover { background-color: #d50032; border-color: #d50032; }
+
+cart-drawer .quantity,
+cart-drawer .quantity__input { border-radius: 40px; }
+
+/* ---------- add-to-cart spinner ---------- */
+.fbf-cart-btn { position: relative; }
+
+.fbf-cart-btn .loading__spinner {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+  width: 16px;
+  height: 16px;
+}
+
+.fbf-cart-btn .loading__spinner.hidden { display: none; }
+
+.fbf-cart-btn .loading__spinner .spinner { width: 16px; height: 16px; }
+.fbf-cart-btn .loading__spinner .path { stroke: #fff; }
+
+.fbf-cart-btn.loading { opacity: 0.9; cursor: progress; }
+
+.product-form__error-message-wrapper[hidden] { display: none; }
+
+.product-form__error-message-wrapper {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #d50032;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fbf-cart-btn .loading__spinner .spinner { animation-duration: 2s; }
+}
+
+/*
+  Dawn's drawer is sized in rem against its own 10px root. Our design build
+  runs at a 16px root (Bootstrap needs it), which inflated the panel to 640px
+  and pushed its off-canvas position past the viewport, adding horizontal
+  page scroll. Pin the panel to Dawn's intended size and clip the shell.
+*/
+cart-drawer.drawer,
+cart-drawer .drawer {
+  overflow: hidden;
+}
+
+cart-drawer .drawer__inner {
+  width: 400px;
+  max-width: calc(100vw - 30px);
+}
+
+@media (max-width: 400px) {
+  cart-drawer .drawer__inner { width: 100vw; max-width: 100vw; }
+}

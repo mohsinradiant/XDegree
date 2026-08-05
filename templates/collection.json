@@ -1,36 +1,204 @@
 {
   "sections": {
-    "banner": {
-      "type": "main-collection-banner",
+    "xd-cat-tiles": {
+      "type": "xd-collection-categories",
+      "blocks": {
+        "t1": {
+          "type": "tile",
+          "settings": {
+            "title": "Power",
+            "link": "",
+            "image": "shopify://shop_images/pro01.png"
+          }
+        },
+        "t2": {
+          "type": "tile",
+          "settings": {
+            "title": "Control",
+            "link": "",
+            "image": "shopify://shop_images/pro02.png"
+          }
+        },
+        "t3": {
+          "type": "tile",
+          "settings": {
+            "title": "Spin",
+            "link": "",
+            "image": "shopify://shop_images/pro03.png"
+          }
+        },
+        "t4": {
+          "type": "tile",
+          "settings": {
+            "title": "All Around",
+            "link": "",
+            "image": "shopify://shop_images/pro04.png"
+          }
+        },
+        "t5": {
+          "type": "tile",
+          "settings": {
+            "title": "Carbon Fiber",
+            "link": "",
+            "image": "shopify://shop_images/pro05.png"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ],
       "settings": {
-        "show_collection_description": true,
-        "show_collection_image": false,
-        "color_scheme": "scheme-1"
+        "heading": ""
       }
     },
-    "product-grid": {
-      "type": "main-collection-product-grid",
+    "xd-grid": {
+      "type": "xd-collection-grid",
       "settings": {
-        "products_per_page": 16,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "enable_filtering": true,
-        "filter_type": "horizontal",
-        "enable_sorting": true,
-        "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "filter_label": "FILTERS BY",
+        "show_sorting": true,
+        "sort_label": "SORT BY",
+        "products_per_page": 9,
+        "show_rating": true,
+        "no_filters_text": "No filters available. Add them in the Search & Discovery app.",
+        "empty_text": "No products found."
       }
+    },
+    "xd-trending": {
+      "type": "xd-product-showcase",
+      "settings": {
+        "eyebrow": "HOT RIGHT NOW IN 2026",
+        "heading": "Trending",
+        "description": "Every element optimized dynamically for structural integrity and high-velocity gameplay.",
+        "collection": "frontpage",
+        "products_to_show": 6,
+        "view_all_label": "View all",
+        "view_all_link": "",
+        "background": "light",
+        "layout": "slider",
+        "card_style": "trending",
+        "show_badges": true,
+        "badge_text": "New Arrival"
+      }
+    },
+    "xd-categories": {
+      "type": "xd-categories-slider",
+      "blocks": {
+        "c1": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/categories01.jpg",
+            "title": "Paddles",
+            "link": ""
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/categories02.jpg",
+            "title": "Nets",
+            "link": ""
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/categories03.jpg",
+            "title": "Backpacks",
+            "link": ""
+          }
+        },
+        "c4": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/categories01.jpg",
+            "title": "Balls",
+            "link": ""
+          }
+        },
+        "c5": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/categories02.jpg",
+            "title": "Courts",
+            "link": ""
+          }
+        },
+        "c6": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/categories03.jpg",
+            "title": "Overgrips",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6"
+      ],
+      "settings": {
+        "eyebrow": "EVERYTHING FOR THE GAME",
+        "heading": "Shop by Categories"
+      }
+    },
+    "xd-trust-bar": {
+      "type": "xd-trust-bar",
+      "blocks": {
+        "i1": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/icon04.png",
+            "label": "Tournament Grade Quality",
+            "description": "Built for competitive performance and durability."
+          }
+        },
+        "i2": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/icon05.png",
+            "label": "Global Shipping",
+            "description": "Fast and secure worldwide product delivery."
+          }
+        },
+        "i3": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/icon06.png",
+            "label": "Professional Court Solutions",
+            "description": "Indoor and outdoor court systems for all facilities."
+          }
+        },
+        "i4": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/icon07.png",
+            "label": "Premium Player Support",
+            "description": "Expert assistance for players, clubs and institutions."
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2",
+        "i3",
+        "i4"
+      ],
+      "settings": {}
     }
   },
   "order": [
-    "banner",
-    "product-grid"
+    "xd-cat-tiles",
+    "xd-grid",
+    "xd-trending",
+    "xd-categories",
+    "xd-trust-bar"
   ]
 }

@@ -35,7 +35,7 @@
         data-bs-target="#mainNavbar"
         aria-controls="mainNavbar"
         aria-expanded="false"
-        aria-label="Toggle navigation"
+        aria-label="{{ 'xd.toggle_navigation' | t }}"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -60,8 +60,13 @@
         shown by CSS). Desktop layout is unchanged - verified pixel-identical.
       {%- endcomment -%}
       <div class="site-header__ecommoption d-inline-flex flex-row align-items-center gap-4 w-auto">
-        <a class="site-header__option site-header__cart" href="{{ routes.cart_url }}">
-          <i class="fa-regular fa-cart-shopping-fast"></i>
+        {%- comment -%}
+          id="cart-icon-bubble" is what Dawn's cart-drawer.js binds to in order
+          to open the native drawer and to re-render the item count after an
+          AJAX add. Its inner markup must match sections/cart-icon-bubble.liquid.
+        {%- endcomment -%}
+        <a class="site-header__option site-header__cart" href="{{ routes.cart_url }}" id="cart-icon-bubble">
+          {%- render 'xd-cart-icon' -%}
         </a>
         <a
           class="site-header__option site-header__user"

@@ -1,0 +1,75 @@
+{% comment %}
+  Markup copied verbatim from the supplied listing.html (.all-product section):
+  the collection title plus the row of round paddle-type tiles.
+{% endcomment %}
+{%- comment -%}
+  Heading precedence: section setting -> collection metafield -> collection title.
+  The metafield lets each collection carry its own headline without editing
+  the template.
+{%- endcomment -%}
+{%- liquid
+  assign page_heading = section.settings.heading
+  if page_heading == blank
+    assign page_heading = collection.metafields.custom.heading.value
+  endif
+  if page_heading == blank
+    assign page_heading = collection.title
+  endif
+-%}
+
+<section class="all-product py-5">
+  <div class="container custom-width">
+    <div class="text-center mb-5">
+      <h2 class="all-heading text-capitalize text-primary">{{ page_heading }}</h2>
+    </div>
+    <div class="row">
+      {%- for block in section.blocks -%}
+        <div class="col" {{ block.shopify_attributes }}>
+          <a class="paddles-card d-block" href="{{ block.settings.link | default: '#' }}">
+            <div class="paddles-card--image">
+              {%- if block.settings.image != blank -%}
+                <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.image.alt | escape }}">
+              {%- endif -%}
+            </div>
+            <h4 class="paddles-card-title">{{ block.settings.title }}</h4>
+          </a>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "XD Collection categories",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Leave blank to use the collection's custom.heading metafield, then its title"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Paddle type",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Power" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "XD Collection categories",
+      "blocks": [
+        { "type": "tile" }, { "type": "tile" }, { "type": "tile" },
+        { "type": "tile" }, { "type": "tile" }
+      ]
+    }
+  ]
+}
+{% endschema %}
