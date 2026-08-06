@@ -261,3 +261,105 @@ body.gradient {
 @media (max-width: 400px) {
   .shopify-policy__title h1 { font-size: 26px; }
 }
+
+/* ---------------------------------------------------------------------------
+   Collection filters
+
+   The supplied collection page.html hard-codes four colour chips and never
+   hides their checkboxes (the design only styles .color-checkbox:checked +
+   .fbf-color__opt). Live filters come from Search & Discovery, so the chips are
+   generated and the raw inputs have to be taken out of the flow here.
+--------------------------------------------------------------------------- */
+.filter-box .color-option { position: relative; line-height: 0; }
+
+.filter-box .color-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A colour with no swatch configured in the admin still needs a visible chip. */
+.filter-box .fbf-color__opt--blank {
+  background-color: #efefef;
+  border: 1px solid #d9d9d9;
+}
+
+.filter-box .color-checkbox:focus-visible + .fbf-color__opt {
+  outline: 2px solid #231f20;
+  outline-offset: 2px;
+}
+
+.filter-box .color-checkbox:disabled + .fbf-color__opt {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/*
+  Active / exhausted states. The link selector has to outrank the design's own
+  `.filter-box .accordion-item .accordion-body ul li a` colour rule.
+*/
+.filter-box .accordion-item .accordion-body ul li a.filter-link.is-active,
+.filter-box .form-check-input:checked + .filter-link {
+  color: #d50032;
+  font-weight: 700;
+}
+
+.filter-box .accordion-item .accordion-body ul li a.filter-link.is-active span {
+  color: #d50032;
+}
+
+.filter-box .form-check-input:disabled + .filter-link {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/*
+  Dawn's base.css sets `input[type='checkbox'] { width: auto }`, and an
+  attribute selector outranks Bootstrap's `.form-check-input { width: 1em }`.
+  With Bootstrap's appearance:none the box then collapses to its two 1px
+  borders - a 2px sliver that reads as a vertical line. Restore a real box.
+*/
+.filter-box .form-check .form-check-input[type='checkbox'] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15em;
+  margin-right: 0;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.filter-box .form-check .form-check-input[type='checkbox']:checked {
+  background-color: #d50032;
+  border-color: #d50032;
+}
+
+.filter-box .form-check .form-check-input[type='checkbox']:focus {
+  border-color: #d50032;
+  box-shadow: 0 0 0 3px rgba(213, 0, 50, 0.15);
+}
+
+/* Bootstrap indents the label by 1.5em; ours is a fixed 18px box. */
+.filter-box .form-check {
+  padding-left: 28px;
+  min-height: 0;
+}
+
+.filter-box .form-check .form-check-input[type='checkbox'] {
+  margin-left: -28px;
+}
+
+/* Rating rows are labels wrapping a hidden checkbox. */
+.filter-box .review-star { cursor: pointer; }
+.filter-box .review-star .fa-regular { color: #d9d9d9; }
+.filter-box .review-star.is-active strong { color: #d50032; }
+
+.filter-box .accordion-item .accordion-body ul li a.filter-link { padding: 3px 0; }

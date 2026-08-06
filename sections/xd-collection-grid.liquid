@@ -1,22 +1,43 @@
 {% comment %}
-  Markup copied verbatim from the supplied listing.html (filter bar, .filter-box
-  sidebar accordion and the product grid).
+  Markup copied verbatim from the supplied "collection page.html" (filter bar,
+  .filter-box sidebar accordion and the product grid).
 
   Wired to Shopify natively:
     - sort dropdown  -> collection.sort_options
     - sidebar        -> collection.filters (Search & Discovery app)
     - price slider   -> the price_range filter's min/max params
     - grid           -> paginated collection.products
+
+  Every filter group in the design is rendered from whatever Search & Discovery
+  returns - nothing is hard-coded - so adding or reordering a filter in the app
+  changes the sidebar with no theme edit. The design uses four different group
+  styles, picked per filter:
+
+    price   -> filter.type == 'price_range'          (dual range slider)
+    swatch  -> filter.presentation == 'swatch'/'image' (Colors)
+    rating  -> param_name contains 'rating'          (star rows)
+    link    -> label listed in "Link-style filters"  (Category)
+    else    -> checkbox list                         (Player Level, Playing
+                                                      Style, Material, Weight)
+
   The grid keeps the .bestsellers-slider class because main.css hangs the
   bordered card treatment off it (.bestsellers-slider .product-card-image).
 {% endcomment %}
+{%- liquid
+  # Labels typed in the theme editor, normalised for comparison against
+  # filter.label. Liquid cannot strip each item of a split, so the separators
+  # are normalised before splitting.
+  assign link_labels = section.settings.link_style_filters | downcase | replace: ', ', ',' | replace: ' ,', ',' | split: ','
+  assign swatch_labels = section.settings.swatch_style_filters | downcase | replace: ', ', ',' | replace: ' ,', ',' | split: ','
+
+  # Colours the design already paints by class in main.css (.color-charcoal
+  # etc). Keep in step with that file if a colour is added there.
+  assign design_colours = 'charcoal,navy,crimson,ivory' | split: ','
+-%}
 {%- paginate collection.products by section.settings.products_per_page -%}
   <section class="section-tb-padding96 pt-0">
     <div class="container custom-width">
       <form id="XdFacetForm" method="get" action="{{ collection.url }}">
-        {%- comment -%} Preserve any non-filter query params (e.g. ?q=) {%- endcomment -%}
-        {%- for param in request.url.params -%}{%- endfor -%}
-
         <div class="row border-bottom g-0 mb-4">
           <div class="col-md-6 d-flex align-items-center gap-4">
             <div class="filter-title d-flex align-items-center gap-3 heading-font">
@@ -43,19 +64,39 @@
             <div class="filter-box">
               <div class="accordion accordion-flush" id="filterAccordion">
                 {%- for filter in collection.filters -%}
-                  {%- assign panel_id = 'facet-' | append: forloop.index -%}
+                  {%- liquid
+                    assign panel_id = 'facet-' | append: forloop.index
+                    assign label_key = filter.label | downcase | strip
+                    assign presentation = filter.presentation | default: 'text'
+
+                    assign style = 'checkbox'
+                    if filter.type == 'price_range'
+                      assign style = 'price'
+                    elsif presentation == 'swatch' or presentation == 'image' or swatch_labels contains label_key
+                      assign style = 'swatch'
+                    elsif filter.param_name contains 'rating'
+                      assign style = 'rating'
+                    elsif link_labels contains label_key
+                      assign style = 'link'
+                    endif
+                  -%}
                   <div class="accordion-item">
                     <h2 class="accordion-header">
                       <button class="accordion-button heading-font" type="button" data-bs-toggle="collapse" data-bs-target="#{{ panel_id }}">{{ filter.label | escape }}</button>
                     </h2>
                     <div id="{{ panel_id }}" class="accordion-collapse collapse show" data-bs-parent="#filterAccordion">
-                      {%- case filter.type -%}
-                        {%- when 'price_range' -%}
+                      {%- case style -%}
+                        {%- when 'price' -%}
                           <div class="accordion-body">
                             <div class="price-values d-flex justify-content-between mb-2">
-                              <span>{{ filter.min_value.value | default: 0 | money_without_trailing_zeros }}</span>
-                              <span>{{ filter.max_value.value | default: filter.range_max | money_without_trailing_zeros }}</span>
+                              <span data-xd-price-min>{{ filter.min_value.value | default: 0 | money_without_trailing_zeros }}</span>
+                              <span data-xd-price-max>{{ filter.max_value.value | default: filter.range_max | money_without_trailing_zeros }}</span>
                             </div>
+                            {%- comment -%}
+                              Shopify states money in cents; the slider works in
+                              whole currency units, so both ends are divided by
+                              100 here and multiplied back in the JS label.
+                            {%- endcomment -%}
                             <span class="multi-range">
                               <input
                                 type="range"
@@ -77,23 +118,164 @@
                               >
                             </span>
                           </div>
+
+                        {%- when 'swatch' -%}
+                          {%- comment -%}
+                            Colour chips.
+
+                            The design ships an exact class per colour
+                            (.color-charcoal, .color-navy, .color-crimson,
+                            .color-ivory in main.css), so the value's handle is
+                            emitted as a class and those win when they exist.
+                            Any colour without a design class falls back to the
+                            swatch Shopify serves, and failing that to a neutral
+                            chip - so a new colour added in the admin still
+                            renders something sensible.
+                          {%- endcomment -%}
+                          <div class="accordion-body ps-3">
+                            <div class="d-flex gap-3 flex-wrap">
+                              {%- for value in filter.values -%}
+                                {%- liquid
+                                  assign input_id = 'xdf-' | append: panel_id | append: '-' | append: forloop.index
+                                  assign colour_handle = value.label | handleize
+                                  assign colour_class = colour_handle | prepend: 'color-'
+
+                                  # An inline style would outrank the design's
+                                  # class, so it is only emitted for colours the
+                                  # design does not already paint.
+                                  assign chip = ''
+                                  unless design_colours contains colour_handle
+                                    if value.swatch.image
+                                      assign chip_image = value.swatch.image | image_url: width: 100
+                                      capture chip
+                                        echo 'background-image:url(' | append: chip_image | append: ');background-size:cover;background-position:center;'
+                                      endcapture
+                                    elsif value.swatch.color
+                                      capture chip
+                                        echo 'background-color:rgb(' | append: value.swatch.color.rgb | append: ');'
+                                      endcapture
+                                    endif
+                                  endunless
+                                -%}
+                                <div class="color-option">
+                                  <input
+                                    type="checkbox"
+                                    class="color-checkbox"
+                                    id="{{ input_id }}"
+                                    name="{{ value.param_name }}"
+                                    value="{{ value.value | escape }}"
+                                    {% if value.active %}checked{% endif %}
+                                    {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                  >
+                                  <label
+                                    for="{{ input_id }}"
+                                    class="fbf-color__opt {{ colour_class }}{% if chip == blank %} fbf-color__opt--blank{% endif %}"
+                                    {% if chip != blank %}style="{{ chip }}"{% endif %}
+                                    title="{{ value.label | escape }}"
+                                  >
+                                    <span class="visually-hidden">{{ value.label | escape }} ({{ value.count }})</span>
+                                  </label>
+                                </div>
+                              {%- endfor -%}
+                            </div>
+                          </div>
+
+                        {%- when 'rating' -%}
+                          {%- comment -%}
+                            Star rows. The value label from a rating metafield is
+                            a number ("4.0"), so it is drawn as full/half/empty
+                            stars; if an app returns something non-numeric the
+                            label is printed as-is.
+                          {%- endcomment -%}
+                          <div class="accordion-body ps-3">
+                            <div class="product-review">
+                              {%- for value in filter.values -%}
+                                {%- liquid
+                                  assign input_id = 'xdf-' | append: panel_id | append: '-' | append: forloop.index
+                                  assign score = value.label | times: 1.0
+                                  assign full_stars = score | floor
+                                  assign has_half = false
+                                  assign fraction = score | minus: full_stars
+                                  if fraction >= 0.5
+                                    assign has_half = true
+                                  endif
+                                  assign half_index = full_stars | plus: 1
+                                -%}
+                                <label class="review-star d-block mb-2{% if value.active %} is-active{% endif %}" for="{{ input_id }}">
+                                  <input
+                                    type="checkbox"
+                                    class="visually-hidden"
+                                    id="{{ input_id }}"
+                                    name="{{ value.param_name }}"
+                                    value="{{ value.value | escape }}"
+                                    {% if value.active %}checked{% endif %}
+                                    {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                  >
+                                  {%- if score > 0 -%}
+                                    {%- for i in (1..5) -%}
+                                      {%- if i <= full_stars -%}
+                                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                      {%- elsif i == half_index and has_half -%}
+                                        <i class="fa-duotone fa-solid fa-star-half" aria-hidden="true"></i>
+                                      {%- else -%}
+                                        <i class="fa-regular fa-star" aria-hidden="true"></i>
+                                      {%- endif -%}
+                                    {%- endfor -%}
+                                    <strong class="d-inline-block ms-2">{{ section.settings.rating_suffix }}</strong>
+                                  {%- else -%}
+                                    <strong class="d-inline-block">{{ value.label | escape }}</strong>
+                                  {%- endif -%}
+                                  {%- if section.settings.show_counts -%}
+                                    <span class="ms-1">({{ value.count }})</span>
+                                  {%- endif -%}
+                                </label>
+                              {%- endfor -%}
+                            </div>
+                          </div>
+
+                        {%- when 'link' -%}
+                          {%- comment -%}
+                            Plain links with counts, as in the design's Category
+                            group. url_to_add / url_to_remove carry the other
+                            active filters through, so nothing is lost.
+                          {%- endcomment -%}
+                          <div class="accordion-body">
+                            <ul class="list-unstyled m-0">
+                              {%- for value in filter.values -%}
+                                <li>
+                                  <a
+                                    href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}"
+                                    class="filter-link d-flex justify-content-between align-items-center w-100{% if value.active %} is-active{% endif %}"
+                                    {% if value.active %}aria-current="true"{% endif %}
+                                  >
+                                    {{ value.label | escape }} <span>{{ value.count }}</span>
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </div>
+
                         {%- else -%}
                           <div class="accordion-body ps-3">
                             <ul class="list-unstyled m-0">
                               {%- for value in filter.values -%}
+                                {%- assign input_id = 'xdf-' | append: panel_id | append: '-' | append: forloop.index -%}
                                 <li{% unless forloop.last %} class="mb-2"{% endunless %}>
                                   <div class="form-check">
                                     <input
                                       class="form-check-input"
                                       type="checkbox"
-                                      id="{{ value.param_name | escape }}-{{ forloop.index }}"
+                                      id="{{ input_id }}"
                                       name="{{ value.param_name }}"
                                       value="{{ value.value | escape }}"
                                       {% if value.active %}checked{% endif %}
                                       {% if value.count == 0 and value.active == false %}disabled{% endif %}
                                     >
-                                    <label class="form-check-label filter-link d-flex justify-content-between align-items-center w-100" for="{{ value.param_name | escape }}-{{ forloop.index }}">
-                                      {{ value.label | escape }} <span>{{ value.count }}</span>
+                                    <label class="form-check-label filter-link d-flex justify-content-between align-items-center w-100" for="{{ input_id }}">
+                                      {{ value.label | escape }}
+                                      {%- if section.settings.show_counts -%}
+                                        <span>{{ value.count }}</span>
+                                      {%- endif -%}
                                     </label>
                                   </div>
                                 </li>
@@ -165,23 +347,53 @@
     var form = document.getElementById('XdFacetForm');
     if (!form) return;
 
+    var lower = form.querySelector('#lower');
+    var upper = form.querySelector('#upper');
+    var minLabel = form.querySelector('[data-xd-price-min]');
+    var maxLabel = form.querySelector('[data-xd-price-max]');
+    var moneyFormat = {{ shop.money_format | json }};
+
+    // Renders a whole-currency amount through the shop's own money format, so
+    // the label matches the server-rendered price everywhere else on the page.
+    function money(amount) {
+      return moneyFormat.replace(/\{\{\s*\w+\s*\}\}/, function () {
+        return amount.toLocaleString({{ request.locale.iso_code | json }});
+      });
+    }
+
+    function syncPriceLabels() {
+      if (!lower || !upper) return;
+      // Keep the handles from crossing over.
+      if (Number(lower.value) > Number(upper.value)) {
+        lower.value = upper.value;
+      }
+      if (minLabel) minLabel.textContent = money(Number(lower.value));
+      if (maxLabel) maxLabel.textContent = money(Number(upper.value));
+    }
+
     // The price inputs always carry a value, so left untouched they would pin
     // filter.v.price.gte/lte onto every URL. Disable them (so they are not
     // serialised) whenever they still span the full range.
     function syncPriceInputs() {
-      var lower = form.querySelector('#lower');
-      var upper = form.querySelector('#upper');
       if (!lower || !upper) return;
       var untouched = Number(lower.value) <= Number(lower.min) && Number(upper.value) >= Number(upper.max);
       lower.disabled = untouched;
       upper.disabled = untouched;
     }
 
+    // Dragging fires input continuously - only the release should reload.
+    form.addEventListener('input', function (event) {
+      if (event.target.hasAttribute('data-xd-price')) syncPriceLabels();
+    });
+
     form.addEventListener('submit', syncPriceInputs);
     form.addEventListener('change', function () {
+      syncPriceLabels();
       syncPriceInputs();
       form.submit();
     });
+
+    syncPriceLabels();
   })();
 </script>
 
@@ -222,6 +434,41 @@
       "label": "Show product rating",
       "default": true,
       "info": "Requires a product rating metafield (e.g. from a reviews app)"
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "paragraph",
+      "content": "The sidebar renders whatever filters are enabled in the Search & Discovery app. Colour groups need a swatch (product option or metaobject) to show as chips."
+    },
+    {
+      "type": "text",
+      "id": "link_style_filters",
+      "label": "Link-style filter groups",
+      "default": "Category",
+      "info": "Comma-separated filter names shown as plain links with counts instead of checkboxes, e.g. Category, Collection"
+    },
+    {
+      "type": "text",
+      "id": "swatch_style_filters",
+      "label": "Swatch-style filter groups",
+      "default": "Colors",
+      "info": "Comma-separated filter names always shown as colour chips, even when Shopify serves no swatch"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_counts",
+      "label": "Show result counts on checkboxes",
+      "default": false,
+      "info": "Link-style groups always show their count"
+    },
+    {
+      "type": "text",
+      "id": "rating_suffix",
+      "label": "Rating filter suffix",
+      "default": "& Up"
     },
     {
       "type": "text",
