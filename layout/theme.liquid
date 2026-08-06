@@ -292,7 +292,6 @@
     {{ 'xd-main.css' | asset_url | stylesheet_tag }}
     {{ 'xd-overrides.css' | asset_url | stylesheet_tag }}
     {{ 'xd-responsive.css' | asset_url | stylesheet_tag }}
-    {{ 'xd-cart.css' | asset_url | stylesheet_tag }}
 
     {%- if settings.cart_type == 'drawer' -%}
       {{ 'component-cart-drawer.css' | asset_url | stylesheet_tag }}
@@ -301,6 +300,12 @@
       {{ 'component-price.css' | asset_url | stylesheet_tag }}
       {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
+
+    {% comment %}
+      Loaded LAST so our drawer layout wins over Dawn's component-cart-*.css
+      without needing !important on every rule.
+    {% endcomment %}
+    {{ 'xd-cart.css' | asset_url | stylesheet_tag }}
 
     {%- unless settings.type_body_font.system? -%}
       {% comment %}theme-check-disable AssetPreload{% endcomment %}
